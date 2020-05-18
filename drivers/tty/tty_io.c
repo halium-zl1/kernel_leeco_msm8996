@@ -1635,7 +1635,7 @@ static void release_tty(struct tty_struct *tty, int idx)
 	tty->port->itty = NULL;
 	if (tty->link)
 		tty->link->port->itty = NULL;
-	flush_kthread_work(&tty->port->buf.work);
+	cancel_work_sync(&tty->port->buf.work);
 
 	if (tty->link)
 		tty_kref_put(tty->link);
@@ -2939,7 +2939,7 @@ static int this_tty(const void *t, struct file *file, unsigned fd)
 		return 0;
 	return file_tty(file) != t ? 0 : fd + 1;
 }
-	
+
 /*
  * This implements the "Secure Attention Key" ---  the idea is to
  * prevent trojan horses by killing all processes associated with this
@@ -3650,4 +3650,3 @@ int __init tty_init(void)
 #endif
 	return 0;
 }
-
